@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { allAgents } from '@/data/extendedMockData';
 import { Agent } from '@/types/agent';
 import { AgentDetailsModal } from '@/components/AgentDetailsModal';
@@ -7,14 +7,25 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
-import { Search, Eye } from 'lucide-react';
+import { Search, Eye, Loader2 } from 'lucide-react';
+import { useAgents } from '@/hooks/useAgents';
 
 const Agents = () => {
-  const [agents] = useState(allAgents);
+  const { agents: dbAgents, isLoading } = useAgents();
+  const [agents, setAgents] = useState<Agent[]>([]);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+
+  // Use database agents first, fallback to mock data
+  useEffect(() => {
+    if (dbAgents.length > 0) {
+      setAgents(dbAgents);
+    } else if (!isLoading) {
+      setAgents(allAgents);
+    }
+  }, [dbAgents, isLoading]);
 
   const filteredAgents = agents.filter(agent => {
     const matchesSearch = agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -70,8 +81,13 @@ const Agents = () => {
       </div>
 
       {/* Table */}
-      <div className="rounded-lg border border-border bg-card overflow-hidden">
-        <Table>
+      {isLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      ) : (
+        <div className="rounded-lg border border-border bg-card overflow-hidden">
+          <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-muted/20">
               <TableHead className="text-foreground">Agent Name</TableHead>
@@ -134,9 +150,10 @@ const Agents = () => {
             ))}
           </TableBody>
         </Table>
-      </div>
+        </div>
+      )}
 
-      {filteredAgents.length === 0 && (
+      {!isLoading && filteredAgents.length === 0 && (
         <div className="text-center py-12">
           <p className="text-muted-foreground">No agents found matching your criteria.</p>
         </div>

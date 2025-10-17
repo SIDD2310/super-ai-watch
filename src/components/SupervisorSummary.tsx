@@ -7,6 +7,8 @@ interface SupervisorSummaryProps {
   pendingApprovals: number;
   healthScore: number;
   autonomyMode: string;
+  totalRequests?: number;
+  avgResponseTime?: number;
 }
 
 export const SupervisorSummary = ({
@@ -14,7 +16,9 @@ export const SupervisorSummary = ({
   resolvedToday,
   pendingApprovals,
   healthScore,
-  autonomyMode
+  autonomyMode,
+  totalRequests = 0,
+  avgResponseTime = 0,
 }: SupervisorSummaryProps) => {
   return (
     <Card className="p-6 bg-gradient-glow border-accent/30">
@@ -72,7 +76,17 @@ export const SupervisorSummary = ({
           </div>
         </div>
 
-        <div className="pt-3 border-t border-border">
+        <div className="pt-3 border-t border-border space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-muted-foreground">Total Requests</span>
+            <span className="text-sm font-semibold text-foreground">
+              {totalRequests.toLocaleString()}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-muted-foreground">Avg Response Time</span>
+            <span className="text-sm font-semibold text-foreground">{avgResponseTime}ms</span>
+          </div>
           <div className="flex items-center justify-between">
             <span className="text-xs text-muted-foreground">Autonomy Level</span>
             <span className="text-sm font-semibold text-accent">{autonomyMode}</span>
@@ -82,7 +96,7 @@ export const SupervisorSummary = ({
 
       <div className="mt-6 p-3 bg-accent/5 rounded-lg border border-accent/20">
         <p className="text-xs text-muted-foreground italic">
-          "All systems nominal. Monitoring agents for anomalies and ready to intervene when needed."
+          "All systems nominal. Monitoring {monitoringCount} agents for anomalies and ready to intervene when needed."
         </p>
       </div>
     </Card>

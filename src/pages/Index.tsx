@@ -10,11 +10,13 @@ import { allAgents as mockAgents, supervisorFeed, allIncidents } from '@/data/ex
 import { Agent } from '@/types/agent';
 import { useToast } from '@/hooks/use-toast';
 import { useRelevanceAgents } from '@/hooks/useRelevanceAgents';
+import { useAgents } from '@/hooks/useAgents';
 import { Loader2 } from 'lucide-react';
 
 const Index = () => {
-  const { agents: relevanceAgents, isLoading } = useRelevanceAgents();
-  const [agents, setAgents] = useState<Agent[]>(mockAgents);
+  const { agents: relevanceAgents, isLoading: relevanceLoading } = useRelevanceAgents();
+  const { agents: dbAgents, isLoading: dbLoading, updateAgent } = useAgents();
+  const [agents, setAgents] = useState<Agent[]>([]);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedIncident, setSelectedIncident] = useState<typeof allIncidents[0] | null>(null);
@@ -22,24 +24,36 @@ const Index = () => {
   const [showHealingModal, setShowHealingModal] = useState(false);
   const { toast } = useToast();
 
-  // Use Relevance AI agents if available
-  useEffect(() => {
-    if (relevanceAgents.length > 0) {
-      setAgents(relevanceAgents);
-    }
-  }, [relevanceAgents]);
+  const isLoading = relevanceLoading || dbLoading;
 
+  // Use database agents first, then Relevance AI agents if DB is empty, otherwise fallback to mock
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setSelectedIncident(allIncidents[0]);
-      setShowIncidentModal(true);
-      toast({
-        title: '🚨 Incident Detected',
-        description: 'Chat Agent showing degraded performance.',
-        variant: 'destructive',
-      });
-    }, 3000);
-    return () => clearTimeout(timer);
+    if (dbAgents.length > 0) {
+      setAgents(dbAgents);
+    } else if (relevanceAgents.length > 0) {
+      setAgents(relevanceAgents);
+    } else if (!dbLoading && !relevanceLoading) {
+      setAgents(mockAgents);
+    }
+  }, [dbAgents, relevanceAgents, dbLoading, relevanceLoading]);
+
+  // Show incident modal only once per session
+  useEffect(() => {
+    const hasSeenIncident = sessionStorage.getItem('hasSeenIncidentModal');
+    
+    if (!hasSeenIncident) {
+      const timer = setTimeout(() => {
+        setSelectedIncident(allIncidents[0]);
+        setShowIncidentModal(true);
+        sessionStorage.setItem('hasSeenIncidentModal', 'true');
+        toast({
+          title: '🚨 Incident Detected',
+          description: 'Chat Agent showing degraded performance.',
+          variant: 'destructive',
+        });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   const handleAgentClick = (agent: Agent) => {
@@ -62,16 +76,20 @@ const Index = () => {
     });
   };
 
-  const handleHealingComplete = () => {
+  const handleHealingComplete = async () => {
     setShowHealingModal(false);
-    // Update agent status to healthy
-    setAgents(prev =>
-      prev.map(agent =>
-        agent.id === 'chat-agent'
-          ? { ...agent, status: 'healthy' as const, successRate: 97, lastIssue: '-' }
-          : agent
-      )
-    );
+    
+    // Find the chat agent and update in database
+    const chatAgent = agents.find(a => a.name.toLowerCase().includes('chat'));
+    if (chatAgent) {
+      await updateAgent(chatAgent.id, {
+        status: 'healthy',
+        successRate: 97,
+        lastIssue: '-',
+        uptime: 99.8,
+      });
+    }
+    
     toast({
       title: '🎉 System Restored',
       description: 'Chat Agent is now operating at optimal performance.',
@@ -119,9 +137,17 @@ const Index = () => {
             <SupervisorSummary
               monitoringCount={agents.length}
               resolvedToday={3}
-              pendingApprovals={1}
+              pendingApprovals={agents.filter(a => a.status === 'failed').length}
               healthScore={8.7}
               autonomyMode="Semi-Autonomous"
+              totalRequests={agents.reduce((sum, a) => sum + (a.totalRequests || 0), 0)}
+              avgResponseTime={
+                agents.length > 0
+                  ? Math.round(
+                      agents.reduce((sum, a) => sum + (a.avgResponseTime || 0), 0) / agents.length
+                    )
+                  : 0
+              }
             />
           </div>
         </div>

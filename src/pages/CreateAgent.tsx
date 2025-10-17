@@ -10,11 +10,14 @@ import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAgents } from '@/hooks/useAgents';
 
 const CreateAgent = () => {
   const [step, setStep] = useState(1);
+  const [isDeploying, setIsDeploying] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { createAgent } = useAgents();
 
   // Form state
   const [agentName, setAgentName] = useState('');
@@ -44,12 +47,38 @@ const CreateAgent = () => {
     if (step > 1) setStep(step - 1);
   };
 
-  const handleDeploy = () => {
-    toast({
-      title: '🚀 Agent Deployed Successfully!',
-      description: `${agentName} is now live and being monitored by SuperAI Supervisor.`
-    });
-    setTimeout(() => navigate('/agents'), 1500);
+  const handleDeploy = async () => {
+    if (!agentName || !description || !category) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please fill in all required fields',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsDeploying(true);
+    try {
+      await createAgent({
+        name: agentName,
+        description,
+        category,
+        model,
+        data_source: dataSource,
+        response_style: responseStyle,
+        goal_metric: goalMetric,
+        self_monitoring: selfMonitoring,
+        alert_sensitivity: alertSensitivity,
+        owner,
+        fix_permissions: fixPermissions,
+      });
+
+      setTimeout(() => navigate('/agents'), 1500);
+    } catch (error) {
+      console.error('Failed to deploy agent:', error);
+    } finally {
+      setIsDeploying(false);
+    }
   };
 
   return (
@@ -328,9 +357,10 @@ const CreateAgent = () => {
           ) : (
             <Button
               onClick={handleDeploy}
+              disabled={isDeploying}
               className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-glow"
             >
-              🚀 Deploy Agent
+              {isDeploying ? 'Deploying...' : '🚀 Deploy Agent'}
             </Button>
           )}
         </div>
