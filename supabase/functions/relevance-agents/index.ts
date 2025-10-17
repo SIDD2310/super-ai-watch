@@ -21,25 +21,16 @@ serve(async (req) => {
 
     const { action } = await req.json();
 
-    // Fetch agents from Relevance AI
+    // List agents - Unfortunately Relevance AI REST API doesn't have a list endpoint
+    // We'll return empty array and suggest using the Python SDK or manually providing agent IDs
     if (action === 'list-agents') {
-      const response = await fetch(`https://api-${REGION}.stack.tryrelevance.com/latest/agents`, {
-        method: 'GET',
-        headers: {
-          'Authorization': RELEVANCE_AUTH_TOKEN,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Relevance AI error:', response.status, errorText);
-        throw new Error(`Relevance AI error: ${response.status}`);
-      }
-
-      const agents = await response.json();
+      console.log('Note: Relevance AI REST API does not support listing agents');
+      console.log('You need to use the Python SDK or manually provide agent IDs');
       
-      return new Response(JSON.stringify({ agents }), {
+      return new Response(JSON.stringify({ 
+        agents: [],
+        message: 'Relevance AI REST API does not support listing agents. Please use the Python SDK or provide agent IDs manually.'
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
@@ -48,14 +39,18 @@ serve(async (req) => {
     if (action === 'trigger-agent') {
       const { agentId, params } = await req.json();
       
-      const response = await fetch(`https://api-${REGION}.stack.tryrelevance.com/latest/agents/${agentId}/trigger`, {
+      const response = await fetch(`https://api-${REGION}.stack.tryrelevance.com/latest/agents/trigger`, {
         method: 'POST',
         headers: {
           'Authorization': RELEVANCE_AUTH_TOKEN,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          params: params || {},
+          message: {
+            role: 'user',
+            content: params?.message || 'Hello',
+          },
+          agent_id: agentId,
           project: PROJECT_ID,
         }),
       });
@@ -75,9 +70,9 @@ serve(async (req) => {
 
     // Get agent conversation history
     if (action === 'agent-history') {
-      const { agentId } = await req.json();
+      const { conversationId } = await req.json();
       
-      const response = await fetch(`https://api-${REGION}.stack.tryrelevance.com/latest/agents/${agentId}/conversations`, {
+      const response = await fetch(`https://api-${REGION}.stack.tryrelevance.com/latest/conversations/${conversationId}`, {
         method: 'GET',
         headers: {
           'Authorization': RELEVANCE_AUTH_TOKEN,
