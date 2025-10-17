@@ -17,38 +17,45 @@ export const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
+      {/* Enhanced animated background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/8 to-background" />
       
-      {/* Radial glow effect */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/10 rounded-full blur-[120px] animate-pulse-glow" />
+      {/* Multiple layered glow effects */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-accent/8 rounded-full blur-[150px] animate-pulse-glow" />
+      <div className="absolute top-1/3 right-1/4 w-[600px] h-[600px] bg-purple/8 rounded-full blur-[140px] animate-pulse-glow" style={{ animationDelay: '1s' }} />
+      
+      {/* Floating particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-accent rounded-full blur-sm animate-float opacity-30" />
+        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-purple rounded-full blur-sm animate-float opacity-40" style={{ animationDelay: '0.5s' }} />
+        <div className="absolute bottom-1/3 left-1/3 w-1.5 h-1.5 bg-accent rounded-full blur-sm animate-float opacity-25" style={{ animationDelay: '1.5s' }} />
+        <div className="absolute bottom-1/4 right-1/4 w-2 h-2 bg-purple rounded-full blur-sm animate-float opacity-35" style={{ animationDelay: '2s' }} />
+      </div>
       
       <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left: Copy */}
           <div className="space-y-8 animate-slide-up">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glassmorphism">
-              <Sparkles className="w-4 h-4 text-accent" />
-              <span className="text-sm text-muted-foreground">Next-gen AI Operations</span>
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full glassmorphism-strong shadow-glow hover-glow transition-all">
+              <Sparkles className="w-4 h-4 text-accent animate-pulse" />
+              <span className="text-sm font-medium text-muted-foreground">Next-gen AI Operations</span>
             </div>
             
-            <h1 className="text-6xl lg:text-7xl font-bold leading-tight">
-              <span className="glow-text-cyan">SuperAI</span>
-              <br />
-              <span className="text-foreground">The AI that</span>
-              <br />
-              <span className="gradient-text">Supervises AI</span>
+            <h1 className="text-6xl lg:text-8xl font-extrabold leading-[1.1] tracking-tight">
+              <span className="glow-text-cyan block mb-2">SuperAI</span>
+              <span className="text-foreground block mb-2">The AI that</span>
+              <span className="gradient-text block">Supervises AI</span>
             </h1>
             
-            <p className="text-xl text-muted-foreground max-w-lg leading-relaxed">
-              Meet the world's first self-healing AI orchestration layer.
+            <p className="text-xl lg:text-2xl text-muted-foreground max-w-lg leading-relaxed font-light">
+              Meet the world's first <span className="text-accent font-medium">self-healing AI orchestration layer</span>.
               It monitors, diagnoses, and repairs your AI agents — automatically.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Button 
                 size="lg" 
-                className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-glow-strong group"
+                className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-glow-strong hover-lift group text-base px-8 py-6"
                 onClick={goToDashboard}
               >
                 <ArrowRight className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" />
@@ -57,38 +64,50 @@ export const HeroSection = () => {
               
               <Button 
                 size="lg" 
-                className="bg-purple-500 hover:bg-purple-600 text-white shadow-purple group"
+                className="bg-purple hover:bg-purple/90 text-purple-foreground shadow-purple hover-lift group text-base px-8 py-6"
                 onClick={scrollToSimulation}
               >
-                <Play className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+                <Play className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                 See Live Demo
               </Button>
               
               <Button 
                 size="lg" 
                 variant="outline"
-                className="border-accent/50 text-foreground hover:bg-accent/10 hover:border-accent"
+                className="border-accent/40 text-foreground hover:bg-accent/15 hover:border-accent hover:shadow-glow transition-all text-base px-8 py-6"
               >
                 Technical Docs
               </Button>
             </div>
             
-            <p className="text-sm text-muted-foreground pt-4">
-              Trusted by the next generation of AI Ops engineers
-            </p>
+            <div className="flex items-center gap-3 pt-6">
+              <div className="flex -space-x-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="w-10 h-10 rounded-full bg-gradient-primary border-2 border-background flex items-center justify-center text-xs font-bold">
+                    {i}
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Trusted by <span className="text-accent font-semibold">500+</span> AI Ops engineers
+              </p>
+            </div>
           </div>
           
           {/* Right: AI Core Animation */}
-          <div className="flex items-center justify-center">
-            <AICore />
+          <div className="flex items-center justify-center lg:justify-end">
+            <div className="relative animate-scale-in">
+              <AICore />
+              <div className="absolute -inset-8 bg-gradient-radial-glow rounded-full opacity-50 blur-2xl" />
+            </div>
           </div>
         </div>
       </div>
       
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 rounded-full border-2 border-accent/50 flex items-start justify-center p-2">
-          <div className="w-1.5 h-3 bg-accent rounded-full animate-pulse" />
+      {/* Enhanced scroll indicator */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
+        <div className="w-7 h-11 rounded-full border-2 border-accent/60 flex items-start justify-center p-2 shadow-glow">
+          <div className="w-1.5 h-3 bg-accent rounded-full animate-pulse shadow-glow" />
         </div>
       </div>
     </section>

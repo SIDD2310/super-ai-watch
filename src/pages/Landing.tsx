@@ -19,7 +19,13 @@ const Landing = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5 overflow-hidden">
+    <div className="min-h-screen bg-background mesh-gradient overflow-hidden relative">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[150px] animate-float" />
+        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-purple/5 rounded-full blur-[180px] animate-float-delayed" />
+      </div>
+      
       <HeroSection />
       <ProblemVisionSection />
       <HowItWorksSection />

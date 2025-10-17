@@ -74,20 +74,40 @@ export default {
         },
         "pulse-glow": {
           "0%, 100%": { opacity: "1", filter: "brightness(1)" },
-          "50%": { opacity: "0.8", filter: "brightness(1.2)" },
+          "50%": { opacity: "0.85", filter: "brightness(1.3)" },
         },
         "heartbeat": {
           "0%, 100%": { transform: "scale(1)" },
-          "25%": { transform: "scale(1.1)" },
+          "25%": { transform: "scale(1.12)" },
           "50%": { transform: "scale(1)" },
         },
         "slide-up": {
-          from: { transform: "translateY(10px)", opacity: "0" },
+          from: { transform: "translateY(20px)", opacity: "0" },
+          to: { transform: "translateY(0)", opacity: "1" },
+        },
+        "slide-down": {
+          from: { transform: "translateY(-20px)", opacity: "0" },
           to: { transform: "translateY(0)", opacity: "1" },
         },
         "fade-in": {
           from: { opacity: "0" },
           to: { opacity: "1" },
+        },
+        "scale-in": {
+          from: { transform: "scale(0.9)", opacity: "0" },
+          to: { transform: "scale(1)", opacity: "1" },
+        },
+        "float": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-25px)" },
+        },
+        "shimmer": {
+          from: { backgroundPosition: "-1000px 0" },
+          to: { backgroundPosition: "1000px 0" },
+        },
+        "rotate-slow": {
+          from: { transform: "rotate(0deg)" },
+          to: { transform: "rotate(360deg)" },
         },
       },
       animation: {
@@ -95,8 +115,13 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         "heartbeat": "heartbeat 2s ease-in-out infinite",
-        "slide-up": "slide-up 0.3s ease-out",
-        "fade-in": "fade-in 0.3s ease-out",
+        "slide-up": "slide-up 0.5s cubic-bezier(0.22, 1, 0.36, 1)",
+        "slide-down": "slide-down 0.5s cubic-bezier(0.22, 1, 0.36, 1)",
+        "fade-in": "fade-in 0.6s ease-out",
+        "scale-in": "scale-in 0.5s cubic-bezier(0.22, 1, 0.36, 1)",
+        "float": "float 4s ease-in-out infinite",
+        "shimmer": "shimmer 3s linear infinite",
+        "rotate-slow": "rotate-slow 20s linear infinite",
       },
       backgroundImage: {
         "gradient-primary": "var(--gradient-primary)",
