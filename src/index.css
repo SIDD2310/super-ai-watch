@@ -8,58 +8,70 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* SuperAI Tech-Ops Design System */
-    --background: 220 25% 8%;
+    /* SuperAI Futuristic Design System - Midnight Blue, Electric Cyan, Neon Purple */
+    --background: 220 40% 5%;
     --foreground: 210 40% 98%;
 
-    --card: 220 20% 12%;
+    --card: 220 30% 8%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 220 20% 10%;
+    --popover: 220 30% 6%;
     --popover-foreground: 210 40% 98%;
 
-    /* Navy blue primary */
-    --primary: 220 70% 15%;
+    /* Midnight blue primary */
+    --primary: 220 80% 18%;
     --primary-foreground: 210 40% 98%;
-    --primary-glow: 220 70% 25%;
+    --primary-glow: 220 80% 35%;
 
-    /* Teal accent */
-    --secondary: 180 100% 50%;
-    --secondary-foreground: 220 25% 8%;
-    --secondary-glow: 180 100% 60%;
+    /* Electric cyan accent */
+    --secondary: 185 100% 55%;
+    --secondary-foreground: 220 40% 5%;
+    --secondary-glow: 185 100% 70%;
 
-    --muted: 220 15% 20%;
+    --muted: 220 20% 15%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 180 85% 45%;
-    --accent-foreground: 220 25% 8%;
+    --accent: 185 100% 50%;
+    --accent-foreground: 220 40% 5%;
+
+    /* Neon purple for highlights */
+    --purple: 280 90% 60%;
+    --purple-foreground: 210 40% 98%;
 
     /* Status colors */
     --success: 142 71% 45%;
     --success-foreground: 210 40% 98%;
     --warning: 38 92% 50%;
-    --warning-foreground: 220 25% 8%;
+    --warning-foreground: 220 40% 5%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 20% 18%;
-    --input: 220 20% 18%;
-    --ring: 180 100% 50%;
+    --border: 220 30% 15%;
+    --input: 220 30% 12%;
+    --ring: 185 100% 55%;
 
     --radius: 0.75rem;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(220 70% 15%), hsl(220 70% 25%));
-    --gradient-glow: linear-gradient(135deg, hsl(180 100% 50% / 0.1), hsl(180 100% 50% / 0.05));
-    --gradient-card: linear-gradient(135deg, hsl(220 20% 12%), hsl(220 20% 10%));
+    /* Futuristic Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(220 80% 18%), hsl(220 80% 35%));
+    --gradient-hero: linear-gradient(135deg, hsl(220 40% 5%), hsl(220 50% 10%), hsl(220 40% 5%));
+    --gradient-glow: linear-gradient(135deg, hsl(185 100% 55% / 0.15), hsl(280 90% 60% / 0.1));
+    --gradient-card: linear-gradient(135deg, hsl(220 30% 8% / 0.8), hsl(220 30% 6% / 0.6));
+    --gradient-purple: linear-gradient(135deg, hsl(280 90% 60% / 0.2), hsl(185 100% 55% / 0.2));
     
-    /* Shadows */
-    --shadow-glow: 0 0 20px hsl(180 100% 50% / 0.3);
-    --shadow-glow-strong: 0 0 30px hsl(180 100% 50% / 0.5);
-    --shadow-card: 0 8px 32px hsl(220 70% 5% / 0.4);
+    /* Glassmorphism */
+    --glass-bg: hsl(220 30% 8% / 0.4);
+    --glass-border: hsl(185 100% 55% / 0.3);
+    
+    /* Cinematic Shadows */
+    --shadow-glow: 0 0 30px hsl(185 100% 55% / 0.4);
+    --shadow-glow-strong: 0 0 50px hsl(185 100% 55% / 0.6), 0 0 100px hsl(280 90% 60% / 0.3);
+    --shadow-purple: 0 0 40px hsl(280 90% 60% / 0.5);
+    --shadow-card: 0 8px 32px hsl(220 80% 5% / 0.5);
     
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 }
 
@@ -80,6 +92,20 @@ All colors MUST be HSL.
   
   .glow-effect {
     text-shadow: 0 0 10px currentColor;
+  }
+  
+  .glow-text-cyan {
+    text-shadow: 0 0 20px hsl(185 100% 55% / 0.8), 0 0 40px hsl(185 100% 55% / 0.5);
+  }
+  
+  .glow-text-purple {
+    text-shadow: 0 0 20px hsl(280 90% 60% / 0.8), 0 0 40px hsl(280 90% 60% / 0.5);
+  }
+  
+  .glassmorphism {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
   }
   
   .pulse-glow {
@@ -122,6 +148,32 @@ All colors MUST be HSL.
     }
   }
   
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+  
+  .float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes orbit {
+    from {
+      transform: rotate(0deg) translateX(120px) rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg) translateX(120px) rotate(-360deg);
+    }
+  }
+  
+  .orbit {
+    animation: orbit 20s linear infinite;
+  }
+  
   .scan-lines {
     position: relative;
   }
@@ -139,5 +191,12 @@ All colors MUST be HSL.
     );
     background-size: 100% 4px;
     pointer-events: none;
+  }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(185 100% 55%), hsl(280 90% 60%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }

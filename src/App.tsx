@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
+import Landing from "./pages/Landing";
 import Index from "./pages/Index";
 import Agents from "./pages/Agents";
 import CreateAgent from "./pages/CreateAgent";
@@ -20,14 +21,14 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Navigation />
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/agents" element={<Agents />} />
-          <Route path="/create" element={<CreateAgent />} />
-          <Route path="/incidents" element={<Incidents />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/dashboard" element={<><Navigation /><Index /></>} />
+          <Route path="/agents" element={<><Navigation /><Agents /></>} />
+          <Route path="/create" element={<><Navigation /><CreateAgent /></>} />
+          <Route path="/incidents" element={<><Navigation /><Incidents /></>} />
+          <Route path="/analytics" element={<><Navigation /><Analytics /></>} />
+          <Route path="/settings" element={<><Navigation /><Settings /></>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
