@@ -26,16 +26,34 @@ const Index = () => {
 
   const isLoading = relevanceLoading || dbLoading;
 
-  // Use database agents first, then Relevance AI agents if DB is empty, otherwise fallback to mock
+  // Merge database agents with mock agents, prioritizing database agents
   useEffect(() => {
-    if (dbAgents.length > 0) {
-      setAgents(dbAgents);
-    } else if (relevanceAgents.length > 0) {
-      setAgents(relevanceAgents);
-    } else if (!dbLoading && !relevanceLoading) {
-      setAgents(mockAgents);
-    }
-  }, [dbAgents, relevanceAgents, dbLoading, relevanceLoading]);
+    const mergedAgents: Agent[] = [];
+    const seenIds = new Set<string>();
+
+    // Add database agents first
+    dbAgents.forEach(agent => {
+      mergedAgents.push(agent);
+      seenIds.add(agent.id);
+    });
+
+    // Add Relevance AI agents if not already in database
+    relevanceAgents.forEach(agent => {
+      if (!seenIds.has(agent.id)) {
+        mergedAgents.push(agent);
+        seenIds.add(agent.id);
+      }
+    });
+
+    // Add mock agents if not already in database or Relevance
+    mockAgents.forEach(agent => {
+      if (!seenIds.has(agent.id)) {
+        mergedAgents.push(agent);
+      }
+    });
+
+    setAgents(mergedAgents);
+  }, [dbAgents, relevanceAgents]);
 
   // Show incident modal only once per session
   useEffect(() => {

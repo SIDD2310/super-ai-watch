@@ -18,14 +18,26 @@ const Agents = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
-  // Use database agents first, fallback to mock data
+  // Merge database agents with mock agents
   useEffect(() => {
-    if (dbAgents.length > 0) {
-      setAgents(dbAgents);
-    } else if (!isLoading) {
-      setAgents(allAgents);
-    }
-  }, [dbAgents, isLoading]);
+    const mergedAgents: Agent[] = [];
+    const seenIds = new Set<string>();
+
+    // Add database agents first
+    dbAgents.forEach(agent => {
+      mergedAgents.push(agent);
+      seenIds.add(agent.id);
+    });
+
+    // Add mock agents if not already in database
+    allAgents.forEach(agent => {
+      if (!seenIds.has(agent.id)) {
+        mergedAgents.push(agent);
+      }
+    });
+
+    setAgents(mergedAgents);
+  }, [dbAgents]);
 
   const filteredAgents = agents.filter(agent => {
     const matchesSearch = agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
