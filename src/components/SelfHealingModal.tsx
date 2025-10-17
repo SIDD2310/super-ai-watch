@@ -45,6 +45,41 @@ const healingLogs: LogEntry[] = [
   },
   {
     timestamp: new Date(),
+    message: 'Test 3/10: "How long does refund processing take?" - ✓ PASS',
+    type: 'success'
+  },
+  {
+    timestamp: new Date(),
+    message: 'Test 4/10: "What items are eligible for refund?" - ✓ PASS',
+    type: 'success'
+  },
+  {
+    timestamp: new Date(),
+    message: 'Test 5/10: "Do I need a receipt for refund?" - ✓ PASS',
+    type: 'success'
+  },
+  {
+    timestamp: new Date(),
+    message: 'Test 6/10: "Can I exchange instead of refund?" - ✓ PASS',
+    type: 'success'
+  },
+  {
+    timestamp: new Date(),
+    message: 'Test 7/10: "Are shipping costs refundable?" - ✓ PASS',
+    type: 'success'
+  },
+  {
+    timestamp: new Date(),
+    message: 'Test 8/10: "What is the refund time limit?" - ✓ PASS',
+    type: 'success'
+  },
+  {
+    timestamp: new Date(),
+    message: 'Test 9/10: "How are refunds processed?" - ✓ PASS',
+    type: 'success'
+  },
+  {
+    timestamp: new Date(),
     message: 'Test 10/10: "How do I request a refund?" - ✓ PASS',
     type: 'success'
   },

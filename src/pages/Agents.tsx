@@ -36,16 +36,27 @@ const Agents = () => {
     const mergedAgents: Agent[] = [];
     const seenIds = new Set<string>();
 
-    // Add database agents first
+    // Add database agents first (they already have performance history from useAgents)
     dbAgents.forEach(agent => {
       mergedAgents.push(agent);
       seenIds.add(agent.id);
     });
 
-    // Add mock agents if not already in database
+    // Add mock agents with performance history if not already in database
     allAgents.forEach(agent => {
       if (!seenIds.has(agent.id)) {
-        mergedAgents.push(agent);
+        // Generate performance history for mock agents
+        const performanceHistory = Array.from({ length: 24 }, (_, i) => ({
+          timestamp: new Date(Date.now() - (23 - i) * 60 * 60 * 1000),
+          successRate: agent.successRate + (Math.random() * 4 - 2),
+          responseTime: agent.avgResponseTime + Math.floor(Math.random() * 40 - 20),
+          requests: Math.floor(Math.random() * 300) + 100,
+        }));
+        
+        mergedAgents.push({
+          ...agent,
+          performanceHistory,
+        });
       }
     });
 

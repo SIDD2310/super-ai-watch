@@ -31,7 +31,7 @@ const Index = () => {
     const mergedAgents: Agent[] = [];
     const seenIds = new Set<string>();
 
-    // Add database agents first
+    // Add database agents first (they already have performance history from useAgents)
     dbAgents.forEach(agent => {
       mergedAgents.push(agent);
       seenIds.add(agent.id);
@@ -45,10 +45,21 @@ const Index = () => {
       }
     });
 
-    // Add mock agents if not already in database or Relevance
+    // Add mock agents with performance history if not already in database or Relevance
     mockAgents.forEach(agent => {
       if (!seenIds.has(agent.id)) {
-        mergedAgents.push(agent);
+        // Generate performance history for mock agents
+        const performanceHistory = Array.from({ length: 24 }, (_, i) => ({
+          timestamp: new Date(Date.now() - (23 - i) * 60 * 60 * 1000),
+          successRate: agent.successRate + (Math.random() * 4 - 2),
+          responseTime: agent.avgResponseTime + Math.floor(Math.random() * 40 - 20),
+          requests: Math.floor(Math.random() * 300) + 100,
+        }));
+        
+        mergedAgents.push({
+          ...agent,
+          performanceHistory,
+        });
       }
     });
 
@@ -97,18 +108,23 @@ const Index = () => {
   const handleHealingComplete = async () => {
     setShowHealingModal(false);
     
-    // Find the chat agent and update in database and local state
+    // Find the chat agent
     const chatAgent = agents.find(a => a.name.toLowerCase().includes('chat'));
     if (chatAgent) {
-      // Update database
-      await updateAgent(chatAgent.id, {
-        status: 'healthy',
-        successRate: 97,
-        lastIssue: '-',
-        uptime: 99.8,
-      });
+      // Only update database if agent has a valid UUID (from database, not mock)
+      const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(chatAgent.id);
       
-      // Immediately update local state for instant UI feedback
+      if (isValidUUID) {
+        // Update database
+        await updateAgent(chatAgent.id, {
+          status: 'healthy',
+          successRate: 97,
+          lastIssue: '-',
+          uptime: 99.8,
+        });
+      }
+      
+      // Always update local state for instant UI feedback
       setAgents(prevAgents => 
         prevAgents.map(a => 
           a.id === chatAgent.id 
