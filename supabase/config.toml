@@ -1,1 +1,7 @@
 project_id = "wdszzbnxphldaqotenye"
+
+[functions.supervisor-diagnose]
+verify_jwt = false
+
+[functions.relevance-agents]
+verify_jwt = false

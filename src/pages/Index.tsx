@@ -6,18 +6,28 @@ import { SelfHealingModal } from '@/components/SelfHealingModal';
 import { SystemHealthBar } from '@/components/SystemHealthBar';
 import { SupervisorFeed } from '@/components/SupervisorFeed';
 import { SupervisorSummary } from '@/components/SupervisorSummary';
-import { allAgents, supervisorFeed, allIncidents } from '@/data/extendedMockData';
+import { allAgents as mockAgents, supervisorFeed, allIncidents } from '@/data/extendedMockData';
 import { Agent } from '@/types/agent';
 import { useToast } from '@/hooks/use-toast';
+import { useRelevanceAgents } from '@/hooks/useRelevanceAgents';
+import { Loader2 } from 'lucide-react';
 
 const Index = () => {
-  const [agents, setAgents] = useState(allAgents);
+  const { agents: relevanceAgents, isLoading } = useRelevanceAgents();
+  const [agents, setAgents] = useState<Agent[]>(mockAgents);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedIncident, setSelectedIncident] = useState<typeof allIncidents[0] | null>(null);
   const [showIncidentModal, setShowIncidentModal] = useState(false);
   const [showHealingModal, setShowHealingModal] = useState(false);
   const { toast } = useToast();
+
+  // Use Relevance AI agents if available
+  useEffect(() => {
+    if (relevanceAgents.length > 0) {
+      setAgents(relevanceAgents);
+    }
+  }, [relevanceAgents]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -83,17 +93,26 @@ const Index = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           <div className="lg:col-span-2">
-            <h2 className="text-xl font-semibold text-foreground mb-4">Agent Health Grid</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {agents.slice(0, 6).map(agent => (
-                <AgentCard
-                  key={agent.id}
-                  agent={agent}
-                  onClick={() => handleAgentClick(agent)}
-                  hasAlert={agent.status === 'failed'}
-                />
-              ))}
-            </div>
+            <h2 className="text-xl font-semibold text-foreground mb-4">
+              Agent Health Grid
+              {isLoading && <span className="text-sm text-muted-foreground ml-2">(Loading Relevance AI agents...)</span>}
+            </h2>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {agents.slice(0, 6).map(agent => (
+                  <AgentCard
+                    key={agent.id}
+                    agent={agent}
+                    onClick={() => handleAgentClick(agent)}
+                    hasAlert={agent.status === 'failed'}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           <div>
