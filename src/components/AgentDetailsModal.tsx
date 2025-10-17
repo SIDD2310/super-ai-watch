@@ -88,12 +88,16 @@ export const AgentDetailsModal = ({ agent, open, onClose, onViewIncident }: Agen
                   <TrendingUp className="w-4 h-4 text-accent" />
                   <span className="text-xs text-muted-foreground">Success Rate</span>
                 </div>
-                <div className={cn(
-                  "text-2xl font-bold",
-                  agent.successRate >= 90 ? "text-green-400" : "text-warning"
-                )}>
-                  {agent.successRate}%
-                </div>
+                {agent.successRate === null || agent.successRate === undefined ? (
+                  <div className="text-2xl font-bold text-muted-foreground italic">Unknown</div>
+                ) : (
+                  <div className={cn(
+                    "text-2xl font-bold",
+                    agent.successRate >= 90 ? "text-green-400" : "text-warning"
+                  )}>
+                    {agent.successRate}%
+                  </div>
+                )}
               </Card>
               
               <Card className="p-4 bg-gradient-card border-border">
@@ -115,29 +119,37 @@ export const AgentDetailsModal = ({ agent, open, onClose, onViewIncident }: Agen
 
             <Card className="p-6 bg-gradient-card border-border">
               <h3 className="text-lg font-semibold mb-4 text-foreground">Performance Trend (24h)</h3>
-              <div className="h-48 flex items-end gap-1">
-                {agent.performanceHistory.slice(-24).map((data, index) => {
-                  const height = (data.successRate / 100) * 100;
-                  return (
-                    <div
-                      key={index}
-                      className={cn(
-                        "flex-1 rounded-t transition-all hover:opacity-80 cursor-pointer relative group",
-                        data.successRate >= 90 ? "bg-green-400" : "bg-warning"
-                      )}
-                      style={{ height: `${height}%` }}
-                    >
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/80 rounded text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                        {data.successRate.toFixed(1)}% • {data.requests} req
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="flex justify-between mt-3 text-xs text-muted-foreground">
-                <span>24h ago</span>
-                <span>Now</span>
-              </div>
+              {agent.performanceHistory.length > 0 ? (
+                <>
+                  <div className="h-48 flex items-end gap-1">
+                    {agent.performanceHistory.slice(-24).map((data, index) => {
+                      const height = (data.successRate / 100) * 100;
+                      return (
+                        <div
+                          key={index}
+                          className={cn(
+                            "flex-1 rounded-t transition-all hover:opacity-80 cursor-pointer relative group",
+                            data.successRate >= 90 ? "bg-green-400" : "bg-warning"
+                          )}
+                          style={{ height: `${height}%` }}
+                        >
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/80 rounded text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                            {data.successRate.toFixed(1)}% • {data.requests} req
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="flex justify-between mt-3 text-xs text-muted-foreground">
+                    <span>24h ago</span>
+                    <span>Now</span>
+                  </div>
+                </>
+              ) : (
+                <div className="h-48 flex items-center justify-center text-muted-foreground">
+                  No performance data available
+                </div>
+              )}
             </Card>
           </TabsContent>
 

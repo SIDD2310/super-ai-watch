@@ -19,29 +19,57 @@ export const useAgents = () => {
       if (error) throw error;
 
       // Transform database data to Agent type
-      const transformedAgents: Agent[] = (data || []).map((dbAgent) => ({
-        id: dbAgent.id,
-        name: dbAgent.name,
-        icon: dbAgent.icon || '🤖',
-        uptime: dbAgent.uptime || 0,
-        successRate: dbAgent.success_rate || 0,
-        lastIssue: dbAgent.last_issue || '-',
-        status: (dbAgent.status as 'healthy' | 'warning' | 'failed') || 'healthy',
-        description: dbAgent.description,
-        version: dbAgent.version || '1.0.0',
-        lastUpdated: new Date(dbAgent.updated_at),
-        totalRequests: dbAgent.total_requests || 0,
-        avgResponseTime: dbAgent.avg_response_time || 0,
-        recentActivity: [] as ActivityLog[], // Populated separately if needed
-        performanceHistory: [] as PerformanceData[], // Populated separately if needed
-        configuration: {
-          model: dbAgent.model || '',
-          temperature: 0.7,
-          maxTokens: 2048,
-          knowledgeBase: dbAgent.data_source || '',
-          lastSync: new Date(),
-        },
-      }));
+      const transformedAgents: Agent[] = (data || []).map((dbAgent) => {
+        // Generate mock performance history for the last 24 hours
+        const performanceHistory: PerformanceData[] = Array.from({ length: 24 }, (_, i) => ({
+          timestamp: new Date(Date.now() - (23 - i) * 60 * 60 * 1000),
+          successRate: dbAgent.success_rate 
+            ? Number(dbAgent.success_rate) + (Math.random() * 4 - 2)
+            : 95 + (Math.random() * 5),
+          responseTime: dbAgent.avg_response_time || 120 + Math.floor(Math.random() * 40),
+          requests: Math.floor(Math.random() * 300) + 100,
+        }));
+
+        // Generate mock recent activity
+        const recentActivity: ActivityLog[] = [
+          {
+            timestamp: new Date(Date.now() - 5 * 60 * 1000),
+            action: 'Health Check',
+            status: 'success',
+            details: 'All systems operational',
+          },
+          {
+            timestamp: new Date(Date.now() - 15 * 60 * 1000),
+            action: 'Data Sync',
+            status: 'success',
+            details: 'Knowledge base synchronized',
+          },
+        ];
+
+        return {
+          id: dbAgent.id,
+          name: dbAgent.name,
+          icon: dbAgent.icon || '🤖',
+          uptime: dbAgent.uptime || 0,
+          successRate: dbAgent.success_rate || 0,
+          lastIssue: dbAgent.last_issue || '-',
+          status: (dbAgent.status as 'healthy' | 'warning' | 'failed') || 'healthy',
+          description: dbAgent.description,
+          version: dbAgent.version || '1.0.0',
+          lastUpdated: new Date(dbAgent.updated_at),
+          totalRequests: dbAgent.total_requests || 0,
+          avgResponseTime: dbAgent.avg_response_time || 0,
+          recentActivity,
+          performanceHistory,
+          configuration: {
+            model: dbAgent.model || '',
+            temperature: 0.7,
+            maxTokens: 2048,
+            knowledgeBase: dbAgent.data_source || '',
+            lastSync: new Date(),
+          },
+        };
+      });
 
       setAgents(transformedAgents);
     } catch (error: any) {

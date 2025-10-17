@@ -97,15 +97,25 @@ const Index = () => {
   const handleHealingComplete = async () => {
     setShowHealingModal(false);
     
-    // Find the chat agent and update in database
+    // Find the chat agent and update in database and local state
     const chatAgent = agents.find(a => a.name.toLowerCase().includes('chat'));
     if (chatAgent) {
+      // Update database
       await updateAgent(chatAgent.id, {
         status: 'healthy',
         successRate: 97,
         lastIssue: '-',
         uptime: 99.8,
       });
+      
+      // Immediately update local state for instant UI feedback
+      setAgents(prevAgents => 
+        prevAgents.map(a => 
+          a.id === chatAgent.id 
+            ? { ...a, status: 'healthy' as const, successRate: 97, lastIssue: '-', uptime: 99.8 }
+            : a
+        )
+      );
     }
     
     toast({
