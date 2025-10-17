@@ -561,19 +561,3 @@ This project is built with [Lovable](https://lovable.dev) and is available for d
 - **x.ai** - For Grok AI integration
 
 ---
-
-## 📞 Support & Contact
-
-For support or questions, please open an issue in the GitHub repository.
-
-Made with ♥️ by [SIDD2310](https://github.com/SIDD2310)
-
----
-
-<div align="center">
-
-**Built with ❤️ using [Lovable](https://lovable.dev)**
-
-[⬆ Back to Top](#superai---the-ai-that-supervises-ai)
-
-</div>
