@@ -1,11 +1,18 @@
 import { Button } from '@/components/ui/button';
-import { Sparkles, Play } from 'lucide-react';
+import { Sparkles, Play, ArrowRight } from 'lucide-react';
 import { AICore } from './AICore';
+import { useNavigate } from 'react-router-dom';
 
 export const HeroSection = () => {
+  const navigate = useNavigate();
+  
   const scrollToSimulation = () => {
     const simulation = document.getElementById('simulation');
     simulation?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const goToDashboard = () => {
+    navigate('/dashboard');
   };
 
   return (
@@ -42,6 +49,15 @@ export const HeroSection = () => {
               <Button 
                 size="lg" 
                 className="bg-accent hover:bg-accent/90 text-accent-foreground shadow-glow-strong group"
+                onClick={goToDashboard}
+              >
+                <ArrowRight className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" />
+                Try the Dashboard
+              </Button>
+              
+              <Button 
+                size="lg" 
+                className="bg-purple-500 hover:bg-purple-600 text-white shadow-purple group"
                 onClick={scrollToSimulation}
               >
                 <Play className="w-5 h-5 mr-2 group-hover:animate-pulse" />
@@ -53,7 +69,7 @@ export const HeroSection = () => {
                 variant="outline"
                 className="border-accent/50 text-foreground hover:bg-accent/10 hover:border-accent"
               >
-                View Technical Overview
+                Technical Docs
               </Button>
             </div>
             

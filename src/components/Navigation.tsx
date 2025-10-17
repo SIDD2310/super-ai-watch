@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 export const Navigation = () => {
   const navItems = [
-    { to: '/', icon: Activity, label: 'Dashboard', emoji: '🏠' },
+    { to: '/dashboard', icon: Activity, label: 'Dashboard', emoji: '🏠' },
     { to: '/agents', icon: Bot, label: 'Agents', emoji: '🤖' },
     { to: '/create', icon: Plus, label: 'Create Agent', emoji: '➕' },
     { to: '/incidents', icon: AlertTriangle, label: 'Incidents', emoji: '⚠️' },
@@ -29,7 +29,7 @@ export const Navigation = () => {
               <NavLink
                 key={item.to}
                 to={item.to}
-                end={item.to === '/'}
+                end={item.to === '/dashboard'}
                 className={({ isActive }) =>
                   cn(
                     'flex items-center gap-2 px-4 py-2 rounded-lg transition-all',
