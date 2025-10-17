@@ -155,62 +155,101 @@ export const AgentDetailsModal = ({ agent, open, onClose, onViewIncident }: Agen
 
           {/* Performance Tab */}
           <TabsContent value="performance" className="space-y-4 mt-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Card className="p-6 bg-gradient-card border-border">
-                <h3 className="text-lg font-semibold mb-4 text-foreground">Response Time Distribution</h3>
-                <div className="space-y-3">
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-muted-foreground">p50 (median)</span>
-                      <span className="text-foreground font-semibold">{agent.avgResponseTime}ms</span>
-                    </div>
-                    <div className="h-2 bg-muted/30 rounded-full overflow-hidden">
-                      <div className="h-full bg-accent" style={{ width: '50%' }} />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-muted-foreground">p90</span>
-                      <span className="text-foreground font-semibold">{Math.floor(agent.avgResponseTime * 1.5)}ms</span>
-                    </div>
-                    <div className="h-2 bg-muted/30 rounded-full overflow-hidden">
-                      <div className="h-full bg-accent" style={{ width: '75%' }} />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-muted-foreground">p99</span>
-                      <span className="text-foreground font-semibold">{Math.floor(agent.avgResponseTime * 2)}ms</span>
-                    </div>
-                    <div className="h-2 bg-muted/30 rounded-full overflow-hidden">
-                      <div className="h-full bg-accent" style={{ width: '90%' }} />
-                    </div>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="p-6 bg-gradient-card border-border">
-                <h3 className="text-lg font-semibold mb-4 text-foreground">Request Volume (24h)</h3>
-                <div className="space-y-2">
-                  {agent.performanceHistory.slice(-6).map((data, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground w-16">
-                        {data.timestamp.getHours()}:00
-                      </span>
-                      <div className="flex-1 h-6 bg-muted/30 rounded overflow-hidden">
-                        <div 
-                          className="h-full bg-accent/70 transition-all"
-                          style={{ width: `${(data.requests / 500) * 100}%` }}
-                        />
+            {agent.performanceHistory && agent.performanceHistory.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card className="p-6 bg-gradient-card border-border">
+                  <h3 className="text-lg font-semibold mb-4 text-foreground">Response Time Distribution</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="text-muted-foreground">p50 (median)</span>
+                        <span className="text-foreground font-semibold">{agent.avgResponseTime}ms</span>
                       </div>
-                      <span className="text-xs text-foreground font-semibold w-12">
-                        {data.requests}
-                      </span>
+                      <div className="h-2 bg-muted/30 rounded-full overflow-hidden">
+                        <div className="h-full bg-accent" style={{ width: '50%' }} />
+                      </div>
                     </div>
-                  ))}
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="text-muted-foreground">p90</span>
+                        <span className="text-foreground font-semibold">{Math.floor(agent.avgResponseTime * 1.5)}ms</span>
+                      </div>
+                      <div className="h-2 bg-muted/30 rounded-full overflow-hidden">
+                        <div className="h-full bg-accent" style={{ width: '75%' }} />
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="text-muted-foreground">p99</span>
+                        <span className="text-foreground font-semibold">{Math.floor(agent.avgResponseTime * 2)}ms</span>
+                      </div>
+                      <div className="h-2 bg-muted/30 rounded-full overflow-hidden">
+                        <div className="h-full bg-accent" style={{ width: '90%' }} />
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="p-6 bg-gradient-card border-border">
+                  <h3 className="text-lg font-semibold mb-4 text-foreground">Request Volume (24h)</h3>
+                  <div className="space-y-2">
+                    {agent.performanceHistory.slice(-6).map((data, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground w-16">
+                          {data.timestamp.getHours()}:00
+                        </span>
+                        <div className="flex-1 h-6 bg-muted/30 rounded overflow-hidden">
+                          <div 
+                            className="h-full bg-accent/70 transition-all"
+                            style={{ width: `${(data.requests / 500) * 100}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-foreground font-semibold w-12">
+                          {data.requests}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+
+                <Card className="p-6 bg-gradient-card border-border md:col-span-2">
+                  <h3 className="text-lg font-semibold mb-4 text-foreground">Performance Trend (24h)</h3>
+                  <div className="h-48 flex items-end gap-1">
+                    {agent.performanceHistory.slice(-24).map((data, index) => {
+                      const height = (data.successRate / 100) * 100;
+                      return (
+                        <div
+                          key={index}
+                          className={cn(
+                            "flex-1 rounded-t transition-all hover:opacity-80 cursor-pointer relative group",
+                            data.successRate >= 90 ? "bg-green-400" : "bg-warning"
+                          )}
+                          style={{ height: `${height}%` }}
+                        >
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black/80 rounded text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                            {data.successRate.toFixed(1)}% • {data.requests} req
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="flex justify-between mt-3 text-xs text-muted-foreground">
+                    <span>24h ago</span>
+                    <span>Now</span>
+                  </div>
+                </Card>
+              </div>
+            ) : (
+              <Card className="p-12 bg-gradient-card border-border">
+                <div className="flex flex-col items-center justify-center text-center">
+                  <TrendingUp className="w-12 h-12 text-muted-foreground/50 mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No Performance Data Available</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Performance metrics will appear here once the agent starts processing requests.
+                  </p>
                 </div>
               </Card>
-            </div>
+            )}
           </TabsContent>
 
           {/* Activity Tab */}
