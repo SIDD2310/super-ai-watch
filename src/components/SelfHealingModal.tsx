@@ -9,6 +9,7 @@ interface SelfHealingModalProps {
   open: boolean;
   onClose: () => void;
   agentName: string;
+  onComplete?: () => void;
 }
 
 const healingLogs: LogEntry[] = [
@@ -59,7 +60,7 @@ const healingLogs: LogEntry[] = [
   }
 ];
 
-export const SelfHealingModal = ({ open, onClose, agentName }: SelfHealingModalProps) => {
+export const SelfHealingModal = ({ open, onClose, agentName, onComplete }: SelfHealingModalProps) => {
   const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
@@ -67,10 +68,11 @@ export const SelfHealingModal = ({ open, onClose, agentName }: SelfHealingModalP
       setIsComplete(false);
       const timer = setTimeout(() => {
         setIsComplete(true);
+        onComplete?.();
       }, healingLogs.length * 500 + 1000);
       return () => clearTimeout(timer);
     }
-  }, [open]);
+  }, [open, onComplete]);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>

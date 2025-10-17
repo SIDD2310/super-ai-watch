@@ -189,8 +189,9 @@ const Index = () => {
 
       <SelfHealingModal
         open={showHealingModal}
-        onClose={handleHealingComplete}
+        onClose={() => setShowHealingModal(false)}
         agentName={allIncidents[0]?.agentName || 'Agent'}
+        onComplete={handleHealingComplete}
       />
     </div>
   );
