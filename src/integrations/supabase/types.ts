@@ -14,7 +14,213 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activity_logs: {
+        Row: {
+          action: string
+          agent_id: string | null
+          details: string | null
+          id: string
+          status: string | null
+          timestamp: string | null
+        }
+        Insert: {
+          action: string
+          agent_id?: string | null
+          details?: string | null
+          id?: string
+          status?: string | null
+          timestamp?: string | null
+        }
+        Update: {
+          action?: string
+          agent_id?: string | null
+          details?: string | null
+          id?: string
+          status?: string | null
+          timestamp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_logs_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agents: {
+        Row: {
+          alert_sensitivity: string | null
+          avg_response_time: number | null
+          category: string | null
+          configuration: Json | null
+          created_at: string | null
+          data_source: string | null
+          description: string
+          fix_permissions: string | null
+          goal_metric: string | null
+          icon: string | null
+          id: string
+          last_issue: string | null
+          model: string | null
+          name: string
+          owner: string | null
+          response_style: string | null
+          self_monitoring: boolean | null
+          status: string | null
+          success_rate: number | null
+          total_requests: number | null
+          updated_at: string | null
+          uptime: number | null
+          version: string | null
+        }
+        Insert: {
+          alert_sensitivity?: string | null
+          avg_response_time?: number | null
+          category?: string | null
+          configuration?: Json | null
+          created_at?: string | null
+          data_source?: string | null
+          description: string
+          fix_permissions?: string | null
+          goal_metric?: string | null
+          icon?: string | null
+          id?: string
+          last_issue?: string | null
+          model?: string | null
+          name: string
+          owner?: string | null
+          response_style?: string | null
+          self_monitoring?: boolean | null
+          status?: string | null
+          success_rate?: number | null
+          total_requests?: number | null
+          updated_at?: string | null
+          uptime?: number | null
+          version?: string | null
+        }
+        Update: {
+          alert_sensitivity?: string | null
+          avg_response_time?: number | null
+          category?: string | null
+          configuration?: Json | null
+          created_at?: string | null
+          data_source?: string | null
+          description?: string
+          fix_permissions?: string | null
+          goal_metric?: string | null
+          icon?: string | null
+          id?: string
+          last_issue?: string | null
+          model?: string | null
+          name?: string
+          owner?: string | null
+          response_style?: string | null
+          self_monitoring?: boolean | null
+          status?: string | null
+          success_rate?: number | null
+          total_requests?: number | null
+          updated_at?: string | null
+          uptime?: number | null
+          version?: string | null
+        }
+        Relationships: []
+      }
+      incidents: {
+        Row: {
+          agent_id: string | null
+          agent_name: string
+          confidence: number | null
+          description: string | null
+          detected_at: string | null
+          id: string
+          impact: string | null
+          logs: Json | null
+          proposed_fix: Json | null
+          resolved_at: string | null
+          root_cause: string | null
+          severity: string | null
+          status: string | null
+          title: string
+        }
+        Insert: {
+          agent_id?: string | null
+          agent_name: string
+          confidence?: number | null
+          description?: string | null
+          detected_at?: string | null
+          id?: string
+          impact?: string | null
+          logs?: Json | null
+          proposed_fix?: Json | null
+          resolved_at?: string | null
+          root_cause?: string | null
+          severity?: string | null
+          status?: string | null
+          title: string
+        }
+        Update: {
+          agent_id?: string | null
+          agent_name?: string
+          confidence?: number | null
+          description?: string | null
+          detected_at?: string | null
+          id?: string
+          impact?: string | null
+          logs?: Json | null
+          proposed_fix?: Json | null
+          resolved_at?: string | null
+          root_cause?: string | null
+          severity?: string | null
+          status?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incidents_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      performance_data: {
+        Row: {
+          agent_id: string | null
+          id: string
+          requests: number | null
+          response_time: number | null
+          success_rate: number | null
+          timestamp: string | null
+        }
+        Insert: {
+          agent_id?: string | null
+          id?: string
+          requests?: number | null
+          response_time?: number | null
+          success_rate?: number | null
+          timestamp?: string | null
+        }
+        Update: {
+          agent_id?: string | null
+          id?: string
+          requests?: number | null
+          response_time?: number | null
+          success_rate?: number | null
+          timestamp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "performance_data_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
