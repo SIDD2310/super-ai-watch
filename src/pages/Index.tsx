@@ -39,7 +39,7 @@ const Index = () => {
 
   const handleViewIncident = () => {
     setShowDetailsModal(false);
-    setSelectedIncident(mockIncident);
+    setSelectedIncident(allIncidents[0]);
     setShowIncidentModal(true);
   };
 
