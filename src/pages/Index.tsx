@@ -40,15 +40,7 @@ const Index = () => {
     // Add Relevance AI agents if not already in database
     relevanceAgents.forEach(agent => {
       if (!seenIds.has(agent.id)) {
-        mergedAgents.push(agent);
-        seenIds.add(agent.id);
-      }
-    });
-
-    // Add mock agents with performance history if not already in database or Relevance
-    mockAgents.forEach(agent => {
-      if (!seenIds.has(agent.id)) {
-        // Generate performance history for mock agents
+        // Generate performance history for Relevance agents
         const performanceHistory = Array.from({ length: 24 }, (_, i) => ({
           timestamp: new Date(Date.now() - (23 - i) * 60 * 60 * 1000),
           successRate: agent.successRate + (Math.random() * 4 - 2),
@@ -60,6 +52,14 @@ const Index = () => {
           ...agent,
           performanceHistory,
         });
+        seenIds.add(agent.id);
+      }
+    });
+
+    // Add mock agents (they already have performanceHistory in extendedMockData)
+    mockAgents.forEach(agent => {
+      if (!seenIds.has(agent.id)) {
+        mergedAgents.push(agent);
       }
     });
 
