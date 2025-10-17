@@ -79,19 +79,6 @@ export const HeroSection = () => {
                 Technical Docs
               </Button>
             </div>
-            
-            <div className="flex items-center gap-3 pt-6">
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-10 h-10 rounded-full bg-gradient-primary border-2 border-background flex items-center justify-center text-xs font-bold">
-                    {i}
-                  </div>
-                ))}
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Trusted by <span className="text-accent font-semibold">500+</span> AI Ops engineers
-              </p>
-            </div>
           </div>
           
           {/* Right: AI Core Animation */}
