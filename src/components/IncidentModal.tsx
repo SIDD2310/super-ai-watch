@@ -18,11 +18,14 @@ export const IncidentModal = ({ incident, open, onClose, onApprove }: IncidentMo
   const { diagnoseIssue, suggestFix, isAnalyzing } = useAISupervisor();
   const [aiDiagnosis, setAiDiagnosis] = useState<string | null>(null);
   const [aiFixSuggestion, setAiFixSuggestion] = useState<string | null>(null);
+  const [hasAttemptedAnalysis, setHasAttemptedAnalysis] = useState(false);
 
   useEffect(() => {
-    if (open && incident) {
-      // Auto-diagnose when modal opens
+    // Only run once per incident when modal opens
+    if (open && incident && !hasAttemptedAnalysis) {
+      setHasAttemptedAnalysis(true);
       const agent = allAgents.find(a => a.name === incident.agentName);
+      
       if (agent) {
         diagnoseIssue(agent, incident).then(result => {
           if (result) setAiDiagnosis(result.analysis);
@@ -33,7 +36,14 @@ export const IncidentModal = ({ incident, open, onClose, onApprove }: IncidentMo
         });
       }
     }
-  }, [open, incident, diagnoseIssue, suggestFix]);
+    
+    // Reset when modal closes
+    if (!open) {
+      setHasAttemptedAnalysis(false);
+      setAiDiagnosis(null);
+      setAiFixSuggestion(null);
+    }
+  }, [open, incident?.id]);
   const [showDetails, setShowDetails] = useState(false);
 
   if (!incident) return null;
