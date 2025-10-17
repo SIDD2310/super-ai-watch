@@ -7,16 +7,29 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
-import { Search, Eye, Loader2 } from 'lucide-react';
+import { Search, Eye, Loader2, Pencil, Trash2 } from 'lucide-react';
 import { useAgents } from '@/hooks/useAgents';
+import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const Agents = () => {
-  const { agents: dbAgents, isLoading } = useAgents();
+  const { agents: dbAgents, isLoading, deleteAgent } = useAgents();
+  const { toast } = useToast();
   const [agents, setAgents] = useState<Agent[]>([]);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [agentToDelete, setAgentToDelete] = useState<Agent | null>(null);
 
   // Merge database agents with mock agents
   useEffect(() => {
@@ -59,6 +72,13 @@ const Agents = () => {
     if (status === 'failed') return 2;
     if (status === 'warning') return 1;
     return 0;
+  };
+
+  const handleDelete = async () => {
+    if (!agentToDelete) return;
+    
+    await deleteAgent(agentToDelete.id);
+    setAgentToDelete(null);
   };
 
   return (
@@ -126,17 +146,21 @@ const Agents = () => {
                   <StatusBadge status={agent.status} />
                 </TableCell>
                 <TableCell>
-                  <div className="flex items-center gap-2">
-                    <span className={agent.successRate >= 90 ? "text-green-400" : "text-warning"}>
-                      {agent.successRate}%
-                    </span>
-                    <div className="w-16 h-2 bg-muted/30 rounded-full overflow-hidden">
-                      <div 
-                        className={agent.successRate >= 90 ? "h-full bg-green-400" : "h-full bg-warning"}
-                        style={{ width: `${agent.successRate}%` }}
-                      />
+                  {agent.successRate === null || agent.successRate === undefined ? (
+                    <span className="text-muted-foreground italic">Unknown</span>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <span className={agent.successRate >= 90 ? "text-green-400" : "text-warning"}>
+                        {agent.successRate}%
+                      </span>
+                      <div className="w-16 h-2 bg-muted/30 rounded-full overflow-hidden">
+                        <div 
+                          className={agent.successRate >= 90 ? "h-full bg-green-400" : "h-full bg-warning"}
+                          style={{ width: `${agent.successRate}%` }}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </TableCell>
                 <TableCell className="text-foreground">{getCostPerDay(agent.totalRequests)}</TableCell>
                 <TableCell>
@@ -148,15 +172,25 @@ const Agents = () => {
                   {new Date(agent.lastUpdated).toLocaleString()}
                 </TableCell>
                 <TableCell>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleViewAgent(agent)}
-                    className="border-accent/30 text-accent hover:bg-accent/10"
-                  >
-                    <Eye className="w-4 h-4 mr-2" />
-                    View
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleViewAgent(agent)}
+                      className="border-accent/30 text-accent hover:bg-accent/10"
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      View
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setAgentToDelete(agent)}
+                      className="border-destructive/30 text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
@@ -176,6 +210,23 @@ const Agents = () => {
         open={showDetailsModal}
         onClose={() => setShowDetailsModal(false)}
       />
+
+      <AlertDialog open={!!agentToDelete} onOpenChange={() => setAgentToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Agent</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{agentToDelete?.name}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

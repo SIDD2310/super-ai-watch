@@ -89,7 +89,7 @@ export const useAgents = () => {
             icon: agentData.icon || '🤖',
             status: 'healthy',
             uptime: 100,
-            success_rate: 100,
+            success_rate: null, // Unknown until tested
             configuration: {
               model: agentData.model || '',
               temperature: 0.7,
