@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { AgentCard } from '@/components/AgentCard';
+import { AgentDetailsModal } from '@/components/AgentDetailsModal';
 import { IncidentModal } from '@/components/IncidentModal';
 import { SelfHealingModal } from '@/components/SelfHealingModal';
 import { AnalyticsTab } from '@/components/AnalyticsTab';
 import { mockAgents, mockIncident, mockMetrics } from '@/data/mockData';
+import { Agent } from '@/types/agent';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Activity, BarChart3, RefreshCw } from 'lucide-react';
@@ -11,6 +13,8 @@ import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [agents, setAgents] = useState(mockAgents);
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedIncident, setSelectedIncident] = useState<typeof mockIncident | null>(null);
   const [showIncidentModal, setShowIncidentModal] = useState(false);
   const [showHealingModal, setShowHealingModal] = useState(false);
@@ -31,6 +35,17 @@ const Index = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  const handleAgentClick = (agent: Agent) => {
+    setSelectedAgent(agent);
+    setShowDetailsModal(true);
+  };
+
+  const handleViewIncident = () => {
+    setShowDetailsModal(false);
+    setSelectedIncident(mockIncident);
+    setShowIncidentModal(true);
+  };
 
   const handleApprovefix = () => {
     setShowIncidentModal(false);
@@ -148,12 +163,8 @@ const Index = () => {
                   <AgentCard
                     key={agent.id}
                     agent={agent}
-                    onClick={() => {
-                      if (agent.status === 'failed' && agent.id === 'chat-agent') {
-                        setSelectedIncident(mockIncident);
-                        setShowIncidentModal(true);
-                      }
-                    }}
+                    onClick={() => handleAgentClick(agent)}
+                    hasAlert={agent.status === 'failed' && agent.id === 'chat-agent'}
                   />
                 ))}
               </div>
@@ -167,6 +178,13 @@ const Index = () => {
       </main>
 
       {/* Modals */}
+      <AgentDetailsModal
+        agent={selectedAgent}
+        open={showDetailsModal}
+        onClose={() => setShowDetailsModal(false)}
+        onViewIncident={selectedAgent?.status === 'failed' && selectedAgent?.id === 'chat-agent' ? handleViewIncident : undefined}
+      />
+
       <IncidentModal
         incident={selectedIncident}
         open={showIncidentModal}

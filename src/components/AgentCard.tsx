@@ -6,20 +6,26 @@ import { cn } from '@/lib/utils';
 interface AgentCardProps {
   agent: Agent;
   onClick?: () => void;
+  hasAlert?: boolean;
 }
 
-export const AgentCard = ({ agent, onClick }: AgentCardProps) => {
+export const AgentCard = ({ agent, onClick, hasAlert }: AgentCardProps) => {
   const isHealthy = agent.status === 'healthy';
   
   return (
     <Card 
       className={cn(
-        'p-6 bg-gradient-card border-border hover:border-accent/50 transition-all cursor-pointer group',
-        'hover:shadow-glow',
+        'p-6 bg-gradient-card border-border hover:border-accent/50 transition-all duration-300 cursor-pointer group relative',
+        'hover:shadow-glow hover:scale-[1.02]',
         !isHealthy && 'border-destructive/30'
       )}
       onClick={onClick}
     >
+      {hasAlert && (
+        <div className="absolute -top-2 -right-2 w-6 h-6 bg-destructive rounded-full flex items-center justify-center animate-pulse-glow">
+          <span className="text-white text-xs font-bold">!</span>
+        </div>
+      )}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <span className="text-4xl">{agent.icon}</span>

@@ -9,6 +9,35 @@ export interface Agent {
   lastIssue: string;
   status: AgentStatus;
   description: string;
+  version: string;
+  lastUpdated: Date;
+  totalRequests: number;
+  avgResponseTime: number;
+  recentActivity: ActivityLog[];
+  performanceHistory: PerformanceData[];
+  configuration: AgentConfig;
+}
+
+export interface ActivityLog {
+  timestamp: Date;
+  action: string;
+  status: 'success' | 'warning' | 'error';
+  details: string;
+}
+
+export interface PerformanceData {
+  timestamp: Date;
+  successRate: number;
+  responseTime: number;
+  requests: number;
+}
+
+export interface AgentConfig {
+  model: string;
+  temperature: number;
+  maxTokens: number;
+  knowledgeBase: string;
+  lastSync: Date;
 }
 
 export interface Incident {
