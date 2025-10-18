@@ -3,7 +3,7 @@ import { Github, Linkedin } from 'lucide-react';
 const team = [
   {
     name: 'Siddharth Choudhury',
-    role: 'Lead Architect',
+    role: 'Dev',
     description: 'Designs the self-healing logic, data pipelines, and orchestration layers powering SuperAI.',
     avatar: '🧑‍💻',
     linkedin: '#',
