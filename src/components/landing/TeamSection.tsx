@@ -3,7 +3,7 @@ import { Github, Linkedin } from 'lucide-react';
 const team = [
   {
     name: 'Siddharth Choudhury',
-    role: 'Solutions Architect',
+    role: 'Dev',
     description: 'Designs the self-healing logic, data pipelines, and orchestration layers powering SuperAI.',
     avatar: '🧑‍💻',
     linkedin: '#',
@@ -11,7 +11,7 @@ const team = [
   },
   {
     name: 'Shiney Zhang',
-    role: 'Product Manager',
+    role: 'Solution Architect',
     description: 'Crafts intuitive dashboards, motion design, and visualization systems.',
     avatar: '👩‍💻',
     linkedin: '#',
@@ -19,7 +19,7 @@ const team = [
   },
   {
     name: 'Maverick Cui',
-    role: 'Solution Architect',
+    role: 'Product Manager',
     description: 'Builds the monitoring engines, API sync layer, and simulation backend.',
     avatar: '🧑‍🔬',
     linkedin: '#',
