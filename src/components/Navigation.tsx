@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 export const Navigation = () => {
   const navItems = [
-    { to: '/landing', icon: Home, label: 'Home', emoji: '🏡' },
+    { to: '/', icon: Home, label: 'Home', emoji: '🏡' },
     { to: '/dashboard', icon: Activity, label: 'Dashboard', emoji: '🏠' },
     { to: '/agents', icon: Bot, label: 'Agents', emoji: '🤖' },
     { to: '/create', icon: Plus, label: 'Create Agent', emoji: '➕' },
